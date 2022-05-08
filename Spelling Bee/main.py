@@ -1,33 +1,42 @@
 #!/usr/bin/env python
-from english_words import english_words_lower_set as words
-from string import ascii_lowercase
+# from english_words import english_words_lower_set as words
+from string import ascii_uppercase
 from random import choice
 
 def main():
+    # read in Scrabble dictionary of words
+    with open('dictionary.txt') as f:
+        words = f.readlines()
 
+    # remove trailing '\n' from words
+    words = [w.rstrip('\n') for w in words]
+    foundWords = []
+
+    minLen = 3
     score = 0
     round = 0
-    exclamations = ["Awesome", "Great", "Superb"]
+    exclamations = ["Awesome", "Great", "Superb", "Fantastic", "Good job", "Doing great", "Keep it up"]
+    vowels = ["A", "E", "I", "O", "U"]
 
     # randomly select letters for game
-    mainLetter = choice(ascii_lowercase)
-    otherLetters = {choice(ascii_lowercase), choice(ascii_lowercase), choice(ascii_lowercase), choice(ascii_lowercase), choice(ascii_lowercase), choice(ascii_lowercase)}
+    mainLetter = choice(ascii_uppercase)
+    otherLetters = {choice(vowels), choice(vowels), choice(ascii_uppercase), choice(ascii_uppercase), choice(ascii_uppercase), choice(ascii_uppercase)}
 
     # check that there are 6 unique other lettes
     while len(otherLetters) < 6:
-        otherLetters.add(choice(ascii_lowercase))
+        otherLetters.add(choice(ascii_uppercase))
 
     # check main letter is not in other letters
     while True:
         if mainLetter in otherLetters:
-            mainLetter = choice(ascii_lowercase)
+            mainLetter = choice(ascii_uppercase)
         else:
             break
 
     allLetters = otherLetters.copy()
     allLetters.add(mainLetter)
     
-    print("\nIf you want to quit, type 'Quit (capital Q)'")
+    print("\nIf you want to quit, enter 'q' or 'Q'")
     
     # game loop
     while True:
@@ -37,16 +46,16 @@ def main():
         print(f"\nRound {round}: Your letters are: {mainLetter}\n{otherLetters}")
         myWord = input("Enter a word using your letters: ")
 
-        if len(myWord) < 4:
-            print("Words must be at least 4 letters long. Try again.")
-            continue
+        # uppercase all letters to compare to set of uppercase english words
+        myWord = myWord.upper()
+
         # check if quitting the game
-        elif myWord == "Quit":
+        if myWord == "Q":
             print(f"\nThanks for playing! Your final score is {score}.")
             break
-        
-        # lowercase all letters to compare to set of lower case english words. Must be done after checking for 'Quit' since capital 'Q' is used to distinguish from the word 'quit' in the game
-        myWord = myWord.lower()
+        elif len(myWord) < minLen:
+            print(f"Words must be at least {minLen} letters long. Try again.")
+            continue
 
         # check if word contains main letter
         if mainLetter not in myWord:
@@ -63,9 +72,14 @@ def main():
             if isBreak:
                 # word contained invalid letter so don't need to check against all words
                 continue
+            # check that current word has not already been found
+            elif myWord in foundWords:
+                print(f"You have already found the word {myWord}! Nice try ;)")
+                continue
+            # valid word, increase score by length of word
             elif myWord in words:
-                # valid word, increase score by length of word
                 score += len(myWord)
+                foundWords.append(myWord)
         
                 # loop through all 7 available letters and if one is not present then no bonus, if get to end of 7 letters without missing a letter in the word then bonus stays True
                 for c in allLetters:
