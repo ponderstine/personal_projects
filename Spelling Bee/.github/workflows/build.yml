@@ -2,9 +2,9 @@ name: Spelling Bee
 
 on:
   push:
-    branches: [ main ]
+    branches: [ spellingBee ]
   pull_request:
-    branches: [ main ]
+    branches: [ spellingBee ]
 
 jobs:
   build:
