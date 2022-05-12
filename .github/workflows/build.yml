@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: pip install -r dependencies.txt
 
-      # - name: Run Pytest
-      #   run: pytest
+      - name: Run Pytest
+        run: pytest
