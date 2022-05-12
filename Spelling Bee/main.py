@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 from string import ascii_uppercase
 from random import choice
+from functions import *
 
 def main():
-    # read in Scrabble dictionary of words
-    with open('dictionary.txt') as f:
-        words = f.readlines()
-
-    # remove trailing '\n' from words
-    words = [w.rstrip('\n') for w in words]
-    foundWords = []
 
     minLen = 3
     score = 0
@@ -34,8 +28,26 @@ def main():
 
     allLetters = otherLetters.copy()
     allLetters.add(mainLetter)
+    possibleWords = []
+    numWords = 0
+
+    # read in Scrabble dictionary of words
+    with open('dictionary.txt') as f:
+        words = f.readlines()
+
+    for w in words:
+        # remove trailing '\n' from words
+        w = w.rstrip('\n')
+
+        # Check if word is valid with current letters
+        if isValid(mainLetter, otherLetters, w, minLen):
+            possibleWords.append(w)
+            numWords += 1
+
+    foundWords = []
     
     print("\nIf you want to quit, enter 'q' or 'Q'")
+    print(f"Your main letter is {mainLetter}, your other letters are {otherLetters}, there are {numWords} words that can be made with these letters.")
     
     # game loop
     while True:
@@ -50,7 +62,7 @@ def main():
 
         # check if quitting the game
         if myWord == "Q":
-            print(f"\nThanks for playing! Your final score is {score}.")
+            print(f"\nThanks for playing! You found {len(foundWords)}/{len(possibleWords)} words. Your final score is {score}.")
             break
         elif len(myWord) < minLen:
             print(f"Words must be at least {minLen} letters long. Try again.")
@@ -76,7 +88,7 @@ def main():
                 print(f"You have already found the word {myWord}! Nice try ;)")
                 continue
             # valid word, increase score by length of word
-            elif myWord in words:
+            elif myWord in possibleWords:
                 score += len(myWord)
                 foundWords.append(myWord)
         
@@ -92,7 +104,7 @@ def main():
                     print(f"{myWord} uses all the letters! Here's a bonus")
                 
                 myExc = choice(exclamations)
-                print(f"{myExc}, your score is now {score}")
+                print(f"{myExc}, you've found {len(foundWords)}/{len(possibleWords)} words, your score is now {score}")
             else:
                 # valid letters but invalid word
                 print(f"{myWord} is not a valid word. Try again!")

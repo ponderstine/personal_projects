@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
-def isValid(mainLetter, otherLetters, word):
+def isValid(mainLetter, otherLetters, word, min):
+    if len(word) < min:
+        return False
+    
     hasMain = False
     for c in word:
-        if ~hasMain and c == mainLetter:
+        if c == mainLetter:
             hasMain = True
-        if c not in otherLetters:
+        elif c not in otherLetters:
             return False
     return hasMain
 
