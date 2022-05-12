@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# from english_words import english_words_lower_set as words
 from string import ascii_uppercase
 from random import choice
 
